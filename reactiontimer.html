@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <title>wayne reaction timer</title>
+    <style>
+      html {
+        background-color: #000000;
+        text-align: center;
+      }
+
+      h1 {
+        color: forestgreen;
+      }
+
+      .block {
+        width: 400px;
+        background: forestgreen;
+        border-radius: 25px;
+        text-align: center;
+        padding: 150px 0;
+        margin: 40px auto;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="app">
+      <h1>Wayne Reaction Timer</h1>
+      <h1 v-if="directions">
+        玩法 說明:按下開始button後,<br />過2~7秒會出現一個綠色盒子,<br />點擊綠色的盒子來<br />測試您的反應時間
+      </h1>
+      <button @click="start" :disabled="isPlaying">play</button>
+      <div @click="stop" class="block" v-if="showBlock">Click Me</div>
+      <h1 v-if="react">您的反應時間: {{ reactionTime }} 毫秒</h1>
+    </div>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script>
+      const app = Vue.createApp({
+        data() {
+          return {
+            isPlaying: false,
+            delay: null,
+            showBlock: false,
+            timer: null,
+            reactionTime: 0,
+            directions: true,
+            react: false,
+          };
+        },
+
+        methods: {
+          start() {
+            this.isPlaying = true;
+            this.directions = false;
+            this.react = true;
+            this.delay = 1000 + Math.random() * 1000;
+            setTimeout(
+              () => (
+                (this.reactionTime = 0),
+                (this.showBlock = true),
+                (this.timer = setInterval(() => {
+                  this.reactionTime += 10;
+                }, 10))
+              ),
+              this.delay
+            );
+          },
+          stop() {
+            clearInterval(this.timer);
+            this.isPlaying = false;
+            this.showBlock = false;
+          },
+        },
+      });
+      app.mount("#app");
+    </script>
+  </body>
+</html>
